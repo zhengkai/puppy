@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+FILE="$1"
+PREV_HASH="$2"
+HASH="$3"
+
+if [ -z "$FILE" ] || [ -z "$PREV_HASH" ] || [ -z "$HASH" ]; then
+	exit
+fi
+
+DIR="$(dirname "$(readlink -f "$0")")" && cd "$DIR" || exit 1
+
+echo "$FILE changed: from $PREV_HASH to $HASH"

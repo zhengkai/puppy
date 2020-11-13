@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-BRANCH="${1:-bbaiyang/machine92}"
+BRANCH="$1"
 if [ -z "$BRANCH" ]; then
 	exit;
 fi
@@ -24,4 +24,4 @@ if [[ "$LINE" -le 1 ]]; then
 	exit
 fi
 
-echo "$BRANCH" "$(wc -l < "$FILE")"
+echo "${BRANCH}: $(wc -l < "$FILE")"

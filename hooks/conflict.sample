@@ -1,0 +1,19 @@
+#!/bin/bash -e
+
+DIR="$(dirname "$(readlink -f "$0")")" && cd "$DIR" || exit 1
+
+mapfile -t LIST < /dev/stdin
+
+BA="${LIST[0]}"
+BB="${LIST[1]}"
+CNT="${LIST[2]}"
+
+echo
+echo branch A: "$BA"
+echo branch B: "$BB"
+echo "files ( $CNT ):"
+
+for FILE in "${LIST[@]:3}"
+do
+	echo "    $FILE"
+done
