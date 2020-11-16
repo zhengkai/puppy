@@ -6,14 +6,16 @@ mapfile -t LIST < /dev/stdin
 
 BA="${LIST[0]}"
 BB="${LIST[1]}"
-CNT="${LIST[2]}"
+
+CNT="${#LIST[@]}"
+((CNT-=2))
 
 echo
-echo branch A: "$BA"
-echo branch B: "$BB"
-echo "files ( $CNT ):"
+echo "hook branch A: $BA"
+echo "hook branch B: $BB"
+echo "hook files ( $CNT ):"
 
-for FILE in "${LIST[@]:3}"
+for FILE in "${LIST[@]:2}"
 do
-	echo "    $FILE"
+	echo "hook file: $FILE"
 done

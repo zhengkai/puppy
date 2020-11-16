@@ -5,4 +5,4 @@ TS="$2"
 
 DIR="$(dirname "$(readlink -f "$0")")" && cd "$DIR" || exit 1
 
-echo "$BRANCH" "$TS"
+echo default rot hook "$BRANCH" "$TS"

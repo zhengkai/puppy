@@ -12,21 +12,32 @@ DIR="$(dirname "$(readlink -f "$0")")" && cd "$DIR" || exit 1
 
 export GIT_DIR="repo"
 
-# NAME="$(echo "${BRANCH,,}" | sed -E 's#[^0-9a-z]#-#g' | sed -E 's#\-+#-#g' | sed -E 's#^-##g' | sed -E 's#-$##g' )"
+NAME="$("${DIR}/name.sh" "$BRANCH")"
 
 COMMIT=$(git merge-base "$BRANCH" "$MAIN_BRANCH")
-TS=$(git show --no-patch --pretty=format:"%ct" "$COMMIT")
+SEC=$(git show --no-patch --pretty=format:"%ct" "$COMMIT")
 TR=$(git show --no-patch --pretty=format:"%cr" "$COMMIT")
 
-((TS=$(date +%s)-TS))
+NOW=$(date +%s)
+((SEC=NOW-SEC))
 
-if [[ "$TS" -lt "$ROT_TIME" ]]; then
+if [[ "$SEC" -lt "$ROT_TIME" ]]; then
 	exit
 fi
 
 echo "${BRANCH}: $TR"
 
+TIME_FILE="${DIR}/tmp/time-rot-${NAME}"
+touch "$TIME_FILE"
+
+HOOK_TIME=$(cat "$TIME_FILE" || echo 1)
+if [[ "$HOOK_TIME" -gt "$NOW" ]]; then
+	exit
+fi
+((HOOK_TIME=NOW+ROT_TIME))
+echo "$HOOK_TIME" > "$TIME_FILE"
+
 ROT_HOOK="${DIR}/hooks/rot"
 if [ -x "$ROT_HOOK" ]; then
-	"$ROT_HOOK" "$BRANCH" "$TS"
+	"$ROT_HOOK" "$BRANCH" "$SEC"
 fi
