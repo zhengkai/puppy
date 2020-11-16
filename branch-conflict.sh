@@ -41,8 +41,8 @@ for (( i = LEN - 1; i > 1; i-- )); do
 					echo
 					echo branch conflict:
 				fi
-				CNT="$(echo "$STAT" | cut -d"	" -f1)"
-				((CNT+=$(echo "$STAT" | cut -d"	" -f2)))
+				CNT="$(echo "$STAT" | cut -d"	" -f1 | sed 's#-#0#')"
+				((CNT+=$(echo "$STAT" | cut -d"	" -f2 | sed 's#-#0#')))
 				((FILE_NUM++))
 				echo "$LINE:$CNT" >> "$FILE"
 			fi
