@@ -1,7 +1,14 @@
-#!/bin/bash -e
+#!/bin/bash
 
 DIR="$(dirname "$(readlink -f "$0")")" && cd "$DIR" || exit 1
 TMP="${DIR}/tmp"
+
+LOCK_FILE="${DIR}/lock-run"
+exec 200>"$LOCK_FILE"
+flock -n 200 || {
+	echo "$LOCK_FILE locked"
+	exit
+}
 
 mkdir -p tmp
 touch list-ignore.txt
@@ -65,3 +72,5 @@ xargs -L 1 "${DIR}/diff-branch.sh" < "$BRANCH_FILE" | sed -e 's#^#    #'
 # branch conflict
 
 "${DIR}/branch-conflict.sh"
+
+flock -u 200
