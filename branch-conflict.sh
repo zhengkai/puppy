@@ -3,8 +3,9 @@
 DIR="$(dirname "$(readlink -f "$0")")" && cd "$DIR" || exit 1
 . ./config.sh
 
+export GIT_DIR=repo
+
 rm tmp/conflict-*.txt 2>/dev/null || :
-FIRST_CONFLICT="1"
 CONFLICT_HOOK="${DIR}/hooks/conflict"
 mapfile -t LIST < <(find tmp -name "diff-*.txt" | sort -r)
 LEN=${#LIST[@]}
@@ -32,23 +33,13 @@ for (( i = LEN - 1; i > 1; i-- )); do
 			echo "$BB"
 		) > "$FILE"
 
-		FILE_NUM=0
-		while read -r LINE; do
-			STAT=$(git --git-dir=repo diff --numstat "${BA}..${BB}" -- "$LINE")
-			if [[ -n "$STAT" ]]; then
-				if [ -n "$FIRST_CONFLICT" ]; then
-					FIRST_CONFLICT=""
-					echo
-					echo branch conflict:
-				fi
-				CNT="$(echo "$STAT" | cut -d"	" -f1 | sed 's#-#0#')"
-				((CNT+=$(echo "$STAT" | cut -d"	" -f2 | sed 's#-#0#')))
-				((FILE_NUM++))
-				echo "$LINE:$CNT" >> "$FILE"
-			fi
+		COMMON=$(git merge-base "$BA" "$BB")
+		git merge-tree "$COMMON" "$BA" "$BB" 2>/dev/null \
+			| ./git-merge-tree-conflict.sh \
+			>> "$FILE"
 
-		done < <(diff -u "$FA" "$FB" | grep -P '^ ' | sed -e 's#^ ##')
-
+		FILE_NUM=$(wc -l < "$FILE")
+		((FILE_NUM-=2))
 		if [[ "$FILE_NUM" -lt 1 ]]; then
 			rm "$FILE"
 			continue
