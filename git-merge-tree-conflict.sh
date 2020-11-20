@@ -27,12 +27,10 @@ do
 		SUB=0
 		continue
 	fi
+
 	if [ -z "$FILE" ]; then
 		FILE="${LINE:55}"
 		FOUND=""
-		continue
-	fi
-	if [ -n "$FOUND" ]; then
 		continue
 	fi
 
