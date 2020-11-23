@@ -25,6 +25,12 @@ for (( i = LEN - 1; i > 1; i-- )); do
 		BB=$(head -n 1 "$FB")
 
 		NAME="${FA:9:-4}_${FB:9:-4}"
+		TIME_FILE="${DIR}/tmp/time-conflict-${NAME}"
+		touch "$TIME_FILE"
+		HOOK_TIME=$(cat "$TIME_FILE" || echo 1)
+		if [[ "$HOOK_TIME" -gt "$NOW" ]]; then
+			continue
+		fi
 
 		FILE="${DIR}/tmp/conflict-${NAME}.txt"
 
@@ -56,12 +62,6 @@ for (( i = LEN - 1; i > 1; i-- )); do
 			continue
 		fi
 
-		TIME_FILE="${DIR}/tmp/time-conflict-${NAME}"
-		touch "$TIME_FILE"
-		HOOK_TIME=$(cat "$TIME_FILE" || echo 1)
-		if [[ "$HOOK_TIME" -gt "$NOW" ]]; then
-			continue
-		fi
 		((HOOK_TIME=NOW+CONFLICT_TIME))
 
 		echo "$HOOK_TIME" > "$TIME_FILE"
