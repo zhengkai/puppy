@@ -34,8 +34,9 @@ for (( i = LEN - 1; i > 1; i-- )); do
 		) > "$FILE"
 
 		COMMON=$(git merge-base "$BA" "$BB")
+
 		git merge-tree "$COMMON" "$BA" "$BB" 2>/dev/null \
-			| ./git-merge-tree-conflict.sh \
+			| ./git-merge-tree-conflict.sh "$FA" "$FB" \
 			>> "$FILE"
 
 		FILE_NUM=$(wc -l < "$FILE")

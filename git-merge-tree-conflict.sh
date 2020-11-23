@@ -8,12 +8,17 @@ MATCH_CONFLICT="^\+<<<<<<< \.our"
 MATCH_CONFLICT_SIDE="^\+======="
 MATCH_CONFLICT_END="^\+>>>>>>> \.their"
 
+FA="$1"
+FB="$1"
+
 # 处理 git merge-tree 的输出，挑出冲突的文件
 
 ADD=0
 SUB=0
 
 START="0"
+
+SKIP=""
 
 while read -r LINE
 do
@@ -22,6 +27,7 @@ do
 		if [ -n "$FILE" ] && [ -n "$FOUND" ]; then
 			echo "${FILE}:${FOUND}"
 		fi
+		SKIP=""
 		FILE=""
 		ADD=0
 		SUB=0
@@ -30,7 +36,19 @@ do
 
 	if [ -z "$FILE" ]; then
 		FILE="${LINE:55}"
+		if [ -z "$FILE" ]; then
+			continue
+		fi
 		FOUND=""
+		if ! grep -Fx "$FILE" "$FA" >/dev/null; then
+			SKIP="1"
+		elif ! grep -Fx "$FILE" "$FB" >/dev/null; then
+			SKIP="1"
+		fi
+		continue
+	fi
+
+	if [ -n "$SKIP" ]; then
 		continue
 	fi
 
