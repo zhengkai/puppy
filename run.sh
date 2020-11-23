@@ -30,10 +30,8 @@ export GIT_DIR="repo"
 
 # track file
 
-echo
-echo track file:
 if [ -s "$TRACK_FILE" ]; then
-	./track-file.sh < "$TRACK_FILE" | sed -e 's#^#    #'
+	./track.sh
 fi
 
 # 生成要检查的分支
