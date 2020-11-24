@@ -23,7 +23,7 @@ if [ ! -d repo ]; then
 	git clone --mirror "$REPO_URL" repo
 fi
 echo 'git fetch ...'
-git --git-dir=repo fetch --prune
+git --git-dir=repo fetch -f --prune
 echo 'done'
 
 export GIT_DIR="repo"
