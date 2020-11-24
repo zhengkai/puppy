@@ -37,7 +37,7 @@ do
 	fi
 
 	git diff --name-only "$CURRENT_COMMIT" "$PREV_COMMIT" -- "$LINE" | while read -r FILE; do
-		AUTHOR=$(git log -n 1 --abbrev=12 --pretty=format:"%cn" -- "$FILE")
+		AUTHOR=$(git log -n 1 --abbrev=12 --date="format:%Y-%m-%d %H:%M:%S" --pretty=format:"%cn, %cd" -- "$FILE")
 		echo "$FILE ( $AUTHOR )" >> "$TRACK_CHANGE_FILE"
 	done
 
@@ -45,19 +45,19 @@ done < list-track.txt
 
 echo "$CURRENT_COMMIT" > "$PREV_COMMIT_FILE"
 
-if [ -s "$TRACK_CHANGE_FILE" ]; then
-	NUM=$(wc -l < "$TRACK_CHANGE_FILE")
-	if [ "$NUM" == 1 ]; then
-		NUM="$NUM file"
-	else
-		NUM="$NUM files"
-	fi
-	echo
-	echo "track: $NUM changed"
-	echo
-else
+if [ ! -s "$TRACK_CHANGE_FILE" ]; then
 	exit
 fi
+
+NUM=$(wc -l < "$TRACK_CHANGE_FILE")
+if [ "$NUM" == 1 ]; then
+	NUM="$NUM file"
+else
+	NUM="$NUM files"
+fi
+echo
+echo "track: $NUM changed"
+echo
 
 HOOK="${DIR}/hooks/track"
 if [ -x "$HOOK" ]; then
