@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+# To enable this hook, rename this file to "rot".
+
 BRANCH="$1"
 TS="$2"
 

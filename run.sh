@@ -3,6 +3,11 @@
 DIR="$(dirname "$(readlink -f "$0")")" && cd "$DIR" || exit 1
 TMP="${DIR}/tmp"
 
+if [ ! -e config.sh ]; then
+	>&2 echo "create config.sh first ( refer config-demo.sh )"
+	exit 1
+fi
+
 mkdir -p tmp
 touch list-ignore.txt
 TRACK_FILE="list-track.txt"
