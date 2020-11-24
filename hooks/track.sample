@@ -1,0 +1,10 @@
+#!/bin/bash -e
+
+# To enable this hook, rename this file to "track".
+
+while read -r LINE
+do
+
+	echo "    $LINE"
+
+done < /dev/stdin
