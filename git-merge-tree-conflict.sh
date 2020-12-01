@@ -64,7 +64,7 @@ do
 
 	if [[ "$LINE" =~ $MATCH_CONFLICT_END ]]; then
 		START="0"
-		if [[ "$ADD" -gt 0 ]] && [[ "$SUB" -gt 0 ]]; then
+		if [[ "$ADD" -gt 5 ]] && [[ "$SUB" -gt 5 ]]; then
 			FOUND="${ADD}+${SUB}"
 		fi
 		continue
